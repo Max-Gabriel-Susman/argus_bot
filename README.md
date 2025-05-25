@@ -6,9 +6,9 @@ Argus bot is a package that contains an autonomous ground vehicle described with
 
 * Ubuntu 24
 
-* ROS 2 Jazzy Jalisco
+* ROS 2 Foxy Fitzroy
 
-* Gazebo(not Gazebo classic)
+* Gazebo Classic
 
 ## Local Setup
 
@@ -19,7 +19,7 @@ mkdir dev_ws
 
 Source the setup script(location may be different on your machine):
 ```
-source /opt/ros/jazzy/setup.bash
+source /opt/ros/foxy/setup.bash
 ```
 
 Create a `src` sub directory to store packages in: 
@@ -39,7 +39,7 @@ colcon build --symlink-install
 
 Ensure `xacro` and `joint_state_publisher_gui` are installed:
 ```
-sudo apt install ros-jazzy-xacro ros-jazzy-joint-state-publisher-gui
+sudo apt install ros-foxy-xacro ros-foxy-joint-state-publisher-gui
 ```
 
 Source the workspace: 
@@ -59,19 +59,19 @@ ros2 launch argus_bot rsp.launch.py use_sim_time:=true
 
 With Gazebo you'll need to make sure you have the bridge and Gazebo vendors installed: 
 ```
-sudo apt install ros-jazzy-ros-gz
+sudo apt install ros-foxy-gazebo-ros-pkgs
 ```
 
 Open a second terminal, change directory into the package(`src/argus_bot`), and launch Gazebo: 
 ```
-ros2 launch ros_gz_sim gz_sim.launch.py
-```
+ros2 launch gazebo_ros gazebo.launch.py
+``` 
 
 At this point the Gazebo world launcher window should pop up. Make sure to select the `Empty` world template
 
 Open a third window and spawn Argus Bot into the Gazebo instance: 
 ```
-ros2 run ros_gz_sim create -topic robot_description -entity robot_name
+ros2 run gazebo_ros spawn_entity.py -topic robot_description -entity robot_name
 ```
 
 ## Manual Control
