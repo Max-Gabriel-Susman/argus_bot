@@ -31,10 +31,10 @@ jobs:
 
       # 4  Build the workspace
       - name: colcon build
-        shell: bash
         run: |
           source /opt/ros/${ROS_DISTRO}/setup.bash
-          colcon build --event-handlers console_cohesion+
+          colcon build --event-handlers console_cohesion+ \
+                      --symlink-install
 
       # 5  Run your CTest / ament tests (if present)
       - name: colcon test
