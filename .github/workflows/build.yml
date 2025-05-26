@@ -22,11 +22,11 @@ jobs:
           mkdir -p /home/ros2_ws/src
           cp -r $GITHUB_WORKSPACE/. /home/ros2_ws/src/
 
-      - name: rosdep install
-        working-directory: /home/ros2_ws/src
-        run: |
-          rosdep update
-          rosdep install --from-paths . -i -y --rosdistro foxy --ignore-src
+      # - name: rosdep install
+      #   working-directory: /home/ros2_ws/src
+      #   run: |
+      #     rosdep update
+      #     rosdep install --from-paths . -i -y --rosdistro foxy --ignore-src
 
       - name: colcon build
         working-directory: /home/ros2_ws
