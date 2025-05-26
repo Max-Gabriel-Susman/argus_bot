@@ -1,0 +1,51 @@
+name: CI – ROS 2 Foxy ✕ Gazebo Classic 11
+
+on: [push, pull_request]
+
+env:
+  ROS_DISTRO: foxy       # single source of truth
+
+jobs:
+  build-test:
+    runs-on: ubuntu-20.04   # Foxy’s official Ubuntu
+
+    steps:
+    # 1. Check out your code
+    - uses: actions/checkout@v4
+
+    # 2. Install ROS 2 tools, Foxy binaries & CLI helpers (colcon, rosdep, vcs)
+    - uses: ros-tooling/setup-ros@v0.7
+      with:
+        required-ros-distributions: ${{ env.ROS_DISTRO }}  # installs desktop-full
+
+    # 3. Add Gazebo Classic + gazebo_ros pkgs (brings in libgazebo11 etc.)
+    - name: Install Gazebo Classic & gazebo_ros integration
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gazebo11 ros-${ROS_DISTRO}-gazebo-ros-pkgs
+        gazebo --version          # sanity-check (should print “Gazebo multi-robot simulator, version 11.XX”)
+
+    # 4. Resolve package dependencies declared in package.xml files
+    - name: Install apt dependencies with rosdep
+      run: |
+        sudo rosdep init || true   # harmless if already initialised
+        rosdep update
+        rosdep install --from-paths src --ignore-src -r -y
+
+    # 5. Build the workspace
+    - name: colcon build
+      run: |
+        source /opt/ros/${ROS_DISTRO}/setup.bash
+        colcon build --event-handlers console_cohesion+
+
+    # 6. Run tests (if you have any)
+    - name: colcon test
+      run: |
+        source install/setup.bash
+        colcon test --event-handlers console_cohesion+
+
+    # 7. Fail job if any test failed
+    - name: Test results
+      run: |
+        source install/setup.bash
+        colcon test-result --verbose
