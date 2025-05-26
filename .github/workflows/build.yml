@@ -3,41 +3,59 @@ name: CI – ROS 2 Foxy & Gazebo 11 (container)
 on: [push, pull_request]
 
 env:
-  ROS_DISTRO: foxy          # single place to change if you ever move up
+  ROS_DISTRO: foxy
 
 jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: osrf/ros:foxy-desktop
+      image: osrf/ros:${{ env.ROS_DISTRO }}-desktop   # Ubuntu 20.04 + ROS 2 Foxy
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup colcon workspace
-      id: configure
-      run: |
-        cd ..
-        mkdir -p /home/ros2_ws/src
-        cp -r argus_bot /home/ros2_ws/src/
-        apt-get update && apt-get upgrade -q -y
-        apt-get update && apt-get install -q -y --no-install-recommends \
-          dirmngr \
-          gnupg2 \
-          lsb-release \
-          python3-colcon-ros
-        cd /home/ros2_ws/src/
-        rosdep update
-        rosdep install --from-paths ./ -i -y --rosdistro foxy \
-          --ignore-src
-    - name: Build project
-      id: build
-      run: |
-        cd /home/ros2_ws/
-        . /opt/ros/foxy/setup.sh
-        colcon build --packages-up-to argus_bot_demos
-    - name: Run tests
-      id: test
-      run: |
-        cd /home/ros2_ws/
-        . /opt/ros/foxy/setup.sh
-        colcon test --event-handlers console_direct+ --packages-select argus_bot argus_bot_demos
-        colcon test-result
+      - uses: actions/checkout@v4
+
+      # ----------------------------------------------------------------------
+      # 1. System packages that the base image doesn't have
+      # ----------------------------------------------------------------------
+      - name: Install extra apt packages
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends \
+            python3-colcon-ros \
+            ros-${ROS_DISTRO}-ament-lint      # <- provides ament_lint_common/auto
+
+      # ----------------------------------------------------------------------
+      # 2. Set up workspace
+      # ----------------------------------------------------------------------
+      - name: Copy sources into workspace
+        run: |
+          mkdir -p /home/ros2_ws/src
+          cp -r $GITHUB_WORKSPACE/argus_bot /home/ros2_ws/src
+
+      # ----------------------------------------------------------------------
+      # 3. Resolve dependencies
+      # ----------------------------------------------------------------------
+      - name: rosdep install
+        working-directory: /home/ros2_ws/src
+        run: |
+          rosdep update
+          rosdep install --from-paths . -i -y --rosdistro $ROS_DISTRO --ignore-src
+
+      # ----------------------------------------------------------------------
+      # 4. Build
+      # ----------------------------------------------------------------------
+      - name: colcon build
+        working-directory: /home/ros2_ws
+        run: |
+          . /opt/ros/$ROS_DISTRO/setup.sh
+          colcon build --symlink-install --packages-up-to argus_bot_demos
+
+      # ----------------------------------------------------------------------
+      # 5. Tests
+      # ----------------------------------------------------------------------
+      - name: colcon test
+        working-directory: /home/ros2_ws
+        run: |
+          . install/setup.sh
+          colcon test --event-handlers console_direct+ \
+                       --packages-select argus_bot argus_bot_demos
+          colcon test-result
