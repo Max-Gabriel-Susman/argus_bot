@@ -2,14 +2,11 @@ name: CI – ROS 2 Foxy & Gazebo 11 (container)
 
 on: [push, pull_request]
 
-env:
-  ROS_DISTRO: foxy
-
 jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: osrf/ros:${{ env.ROS_DISTRO }}-desktop   # Ubuntu 20.04 + ROS 2 Foxy
+      image: osrf/ros:foxy-desktop   # Ubuntu 20.04 + ROS 2 Foxy
     steps:
       - uses: actions/checkout@v4
 
