@@ -29,13 +29,6 @@ jobs:
           rosdep init || true
           rosdep update
 
-
-      # 3  Pull third-party dependencies declared in package.xml files
-      - name: rosdep install
-        run: |
-          rosdep update
-          rosdep install --from-paths src --ignore-src -r -y
-
       # 4  Build the workspace
       - name: colcon build
         run: |
