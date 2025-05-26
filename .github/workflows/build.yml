@@ -15,7 +15,9 @@ jobs:
           apt-get update -qq
           apt-get install -y --no-install-recommends \
             python3-colcon-ros \
-            ros-${ROS_DISTRO}-ament-lint
+            ros-foxy-ament-lint \
+            ros-foxy-ament-lint-common \
+            ros-foxy-ament-lint-auto
 
       - name: Copy sources into workspace   # ← fixed path
         run: |
