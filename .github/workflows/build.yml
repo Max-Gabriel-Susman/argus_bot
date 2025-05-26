@@ -6,49 +6,34 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: osrf/ros:foxy-desktop   # Ubuntu 20.04 + ROS 2 Foxy
+      image: osrf/ros:foxy-desktop
     steps:
       - uses: actions/checkout@v4
 
-      # ----------------------------------------------------------------------
-      # 1. System packages that the base image doesn't have
-      # ----------------------------------------------------------------------
       - name: Install extra apt packages
         run: |
           apt-get update -qq
           apt-get install -y --no-install-recommends \
             python3-colcon-ros \
-            ros-${ROS_DISTRO}-ament-lint      # <- provides ament_lint_common/auto
+            ros-${ROS_DISTRO}-ament-lint
 
-      # ----------------------------------------------------------------------
-      # 2. Set up workspace
-      # ----------------------------------------------------------------------
-      - name: Copy sources into workspace
+      - name: Copy sources into workspace   # ← fixed path
         run: |
           mkdir -p /home/ros2_ws/src
-          cp -r $GITHUB_WORKSPACE/argus_bot /home/ros2_ws/src
+          cp -r $GITHUB_WORKSPACE/. /home/ros2_ws/src/
 
-      # ----------------------------------------------------------------------
-      # 3. Resolve dependencies
-      # ----------------------------------------------------------------------
       - name: rosdep install
         working-directory: /home/ros2_ws/src
         run: |
           rosdep update
           rosdep install --from-paths . -i -y --rosdistro $ROS_DISTRO --ignore-src
 
-      # ----------------------------------------------------------------------
-      # 4. Build
-      # ----------------------------------------------------------------------
       - name: colcon build
         working-directory: /home/ros2_ws
         run: |
           . /opt/ros/$ROS_DISTRO/setup.sh
           colcon build --symlink-install --packages-up-to argus_bot_demos
 
-      # ----------------------------------------------------------------------
-      # 5. Tests
-      # ----------------------------------------------------------------------
       - name: colcon test
         working-directory: /home/ros2_ws
         run: |
