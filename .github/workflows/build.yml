@@ -30,20 +30,15 @@ jobs:
           rosdep update
 
       # # 4  Build the workspace
-      # - name: colcon build
-      #   run: |
-      #     source /opt/ros/${ROS_DISTRO}/setup.bash
-      #     colcon build --event-handlers console_cohesion+ \
-      #                 --symlink-install
-
-      # # 5  Run your CTest / ament tests (if present)
-      # - name: colcon test
-      #   run: |
-      #     source install/setup.bash
-      #     colcon test --event-handlers console_cohesion+
-
-      # # 6  Fail the job if any test failed
-      # - name: colcon test-result
-      #   run: |
-      #     source install/setup.bash
-      #     colcon test-result --verbose
+      - name: Build project
+        id: build
+        run: |
+          cd /home/ros2_ws/
+          . /opt/ros/foxy/setup.sh
+          colcon build --packages-up-to gazebo_ros2_control_demos
+      - name: Run tests
+        id: test
+        run: |
+          cd /home/ros2_ws/
+          . /opt/ros/foxy/setup.sh
+          colcon test --event-handlers console_direct+ --packages-select gazebo_ros2_control gazebo_ros2_control_demos
