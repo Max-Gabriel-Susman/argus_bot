@@ -15,9 +15,7 @@ jobs:
           apt-get update -qq
           apt-get install -y --no-install-recommends \
             python3-colcon-ros \
-            ros-foxy-ament-lint \
-            ros-foxy-ament-lint-common \
-            ros-foxy-ament-lint-auto
+            ros-foxy-ament-lint
 
       - name: Copy sources into workspace   # ← fixed path
         run: |
@@ -28,12 +26,12 @@ jobs:
         working-directory: /home/ros2_ws/src
         run: |
           rosdep update
-          rosdep install --from-paths . -i -y --rosdistro $ROS_DISTRO --ignore-src
+          rosdep install --from-paths . -i -y --rosdistro foxy --ignore-src
 
       - name: colcon build
         working-directory: /home/ros2_ws
         run: |
-          . /opt/ros/$ROS_DISTRO/setup.sh
+          . /opt/ros/foxy/setup.sh
           colcon build --symlink-install --packages-up-to argus_bot_demos
 
       - name: colcon test
