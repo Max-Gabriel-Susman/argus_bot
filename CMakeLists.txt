@@ -22,6 +22,10 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 if(BUILD_TESTING)
+  set(AMENT_Copyright_EXCLUDE
+    CONTRIBUTING.md
+    README.md
+  )
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
   # uncomment the line when a copyright and license is not present in all source files
@@ -29,10 +33,6 @@ if(BUILD_TESTING)
   # the following line skips cpplint (only works in a git repo)
   # uncomment the line when this package is not in a git repo
   #set(ament_cmake_cpplint_FOUND TRUE)
-  set(AMENT_Copyright_EXCLUDE
-    CONTRIBUTING.md
-    README.md
-  )
   ament_lint_auto_find_test_dependencies()
 endif()
 
