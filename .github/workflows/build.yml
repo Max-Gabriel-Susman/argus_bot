@@ -32,12 +32,12 @@ jobs:
         working-directory: /home/ros2_ws
         run: |
           . /opt/ros/foxy/setup.sh
-          colcon build --symlink-install --packages-up-to argus_bot_demos
+          colcon build --symlink-install --packages-up-to argus_bot
 
       - name: colcon test
         working-directory: /home/ros2_ws
         run: |
           . install/setup.sh
           colcon test --event-handlers console_direct+ \
-                       --packages-select argus_bot argus_bot_demos
+                       --packages-select argus_bot
           colcon test-result
