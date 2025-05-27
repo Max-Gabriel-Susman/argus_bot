@@ -2,15 +2,9 @@
 
 Argus bot is a package that contains an autonomous ground vehicle described with ROS 2. 
 
-## System Requirements
-
-* Ubuntu 24
-
-* ROS 2 Foxy Fitzroy
-
-* Gazebo Classic
-
 ## Local Setup
+
+Prior to the rest of these steps you'll need to be in an Ubuntu 20 environment with ROS 2 Foxy installed.
 
 Create a workspace directory: 
 ```
