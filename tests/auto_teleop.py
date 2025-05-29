@@ -1,6 +1,8 @@
-import math, rclpy
+import math
+import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
+
 
 class AutoTeleop(Node):
     def __init__(self):
@@ -13,21 +15,23 @@ class AutoTeleop(Node):
         t = self.get_clock().now().seconds_nanoseconds()[0] - self.start_time
         msg = Twist()
 
-        phase = int(t / 5)  
-        if phase % 2 == 0:          
-            msg.linear.x = 0.4      
-        else:                      
-            msg.angular.z = math.pi/10  
+        phase = int(t / 5)
+        if phase % 2 == 0:
+            msg.linear.x = 0.4
+        else:
+            msg.angular.z = math.pi/10
 
-        if phase >= 8:             
+        if phase >= 8:
             rclpy.shutdown()
             return
 
         self.pub.publish(msg)
 
+
 def main():
     rclpy.init()
     rclpy.spin(AutoTeleop())
+
 
 if __name__ == '__main__':
     main()

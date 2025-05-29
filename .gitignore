@@ -1,0 +1,4 @@
+#ignoring build files at package level, these belong two directories up at workspace level
+build/
+install/
+log/
