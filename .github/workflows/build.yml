@@ -17,16 +17,10 @@ jobs:
             python3-colcon-ros \
             ros-foxy-ament-lint
 
-      - name: Copy sources into workspace   # ← fixed path
+      - name: Copy sources into workspace 
         run: |
           mkdir -p /home/ros2_ws/src
           cp -r $GITHUB_WORKSPACE/. /home/ros2_ws/src/
-
-      # - name: rosdep install
-      #   working-directory: /home/ros2_ws/src
-      #   run: |
-      #     rosdep update
-      #     rosdep install --from-paths . -i -y --rosdistro foxy --ignore-src
 
       - name: colcon build
         working-directory: /home/ros2_ws
