@@ -57,6 +57,10 @@
         <material>Gazebo/White</material>
     </gazebo>
 
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
+
     <!-- LEFT WHEEL LINK -->
 
     <joint name="left_wheel_joint" type="continuous">
