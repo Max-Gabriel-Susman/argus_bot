@@ -128,3 +128,5 @@ ros2 launch gazebo_ros gazebo.launch.py gui:=false
 
 ### X Windows Setup in Ubuntu 
 
+NOTE: you need to first whitelist '/tmp/.X11-unix'
+
